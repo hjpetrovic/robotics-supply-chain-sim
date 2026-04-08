@@ -33,7 +33,7 @@ export function FlowMapTab() {
       svg.append("g").selectAll("path")
         .data(topojson.feature(world,world.objects.countries).features)
         .join("path").attr("d",path)
-        .attr("fill","#1a2030").attr("stroke","#2a3545").attr("stroke-width","0.4");
+        .attr("fill",C.bg0).attr("stroke",C.bg3).attr("stroke-width","0.4");
 
       const extract=[
         {id:"cn_e",label:"China",     lon:104,lat:36, r:13,col:C.amber,detail:"Rare earths, Si, Ga, W"},
@@ -122,7 +122,7 @@ export function FlowMapTab() {
   return(
     <div style={{display:"grid",gap:"1.25rem"}}>
       <Card s={{padding:0,overflow:"hidden"}}>
-        <div style={{padding:"12px 16px",borderBottom:`0.5px solid ${C.border}`,display:"flex",gap:16,flexWrap:"wrap",alignItems:"center"}}>
+        <div style={{padding:"12px 16px",borderBottom:`1px solid ${C.border}`,display:"flex",gap:16,flexWrap:"wrap",alignItems:"center"}}>
           {[{l:"Extraction",c:C.amber,sh:"●"},{l:"Refining",c:C.amber,sh:"■"},{l:"Components",c:C.blue,sh:"⬡"},{l:"OEM Assembly",c:C.steel,sh:"▲"}].map(x=>(
             <span key={x.l} style={{display:"flex",alignItems:"center",gap:5,fontSize:11,color:C.textSub}}>
               <span style={{color:x.c,fontSize:14}}>{x.sh}</span>{x.l}
@@ -143,7 +143,7 @@ export function FlowMapTab() {
             {node:"Indonesia nickel",detail:"37% of global nickel after 2020 export ban reshaped market",risk:6.8},
             {node:"EU reshoring",detail:"CRMA accelerating non-Chinese refining investment since 2024",risk:4.0},
           ].map(f=>(
-            <div key={f.node} style={{padding:"9px 12px",border:`0.5px solid ${C.border}`,borderRadius:8,borderLeft:`2px solid ${rCol(f.risk)}`}}>
+            <div key={f.node} style={{padding:"9px 12px",border:`1px solid ${C.border}`,borderRadius:8,borderLeft:`2px solid ${rCol(f.risk)}`}}>
               <div style={{fontSize:12,fontWeight:500,color:C.text,marginBottom:3}}>{f.node}</div>
               <div style={{fontSize:11,color:C.textSub,lineHeight:1.5,marginBottom:5}}>{f.detail}</div>
               <Badge col={rCol(f.risk)} bg={rBg(f.risk)}>Risk {f.risk}</Badge>

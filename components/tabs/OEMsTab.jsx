@@ -19,10 +19,10 @@ export function OEMsTab({result}) {
     cInst.current=new window.Chart(canRef.current,{type:"bar",indexAxis:"y",data:{
       labels:top10.map(o=>o.name),
       datasets:[
-        {label:"2024 cap.",data:top10.map(o=>o.cap24),backgroundColor:"rgba(136,153,170,0.25)",borderColor:C.steel,borderWidth:1},
-        {label:"Projected",data:top10.map(o=>Math.round(o.projCap)),backgroundColor:"rgba(74,158,255,0.25)",borderColor:C.blue,borderWidth:1},
+        {label:"2024 cap.",data:top10.map(o=>o.cap24),backgroundColor:C.steelD,borderColor:C.steel,borderWidth:1},
+        {label:"Projected",data:top10.map(o=>Math.round(o.projCap)),backgroundColor:C.blueD,borderColor:C.blue,borderWidth:1},
       ]
-    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:C.textMuted,font:{size:10}}},y:{grid:{display:false},ticks:{color:C.textSub,font:{size:10}}}}}});
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:C.bg3},ticks:{color:C.steel,font:{size:10}}},y:{grid:{display:false},ticks:{color:C.steel,font:{size:10}}}}}});
     return()=>{if(cInst.current)cInst.current.destroy();};
   },[result.oemList]);
   return(
@@ -39,11 +39,11 @@ export function OEMsTab({result}) {
         <div style={{fontSize:11,color:C.textMuted,marginTop:8}}>OEM growth modelled via S-curve (logistic) capped at each manufacturer's stated maximum capacity multiple. No unbounded exponential extrapolation.</div>
       </Card>
       <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
-        {types.map(t=><button key={t} onClick={()=>setFilter(t)} style={{fontSize:11,padding:"4px 12px",borderRadius:20,border:`0.5px solid ${filter===t?C.blue:C.border}`,background:filter===t?C.blueD:"transparent",color:filter===t?C.blue:C.textSub,cursor:"pointer"}}>{t}</button>)}
+        {types.map(t=><button key={t} onClick={()=>setFilter(t)} style={{fontSize:11,padding:"4px 12px",borderRadius:20,border:`1px solid ${filter===t?C.blue:C.border}`,background:filter===t?C.blueD:"transparent",color:filter===t?C.blue:C.textSub,cursor:"pointer"}}>{t}</button>)}
       </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:8}}>
         {filtered.map(o=>(
-          <div key={o.id} style={{padding:"12px 14px",border:`0.5px solid ${C.border}`,borderRadius:9,background:C.bg1}}>
+          <div key={o.id} style={{padding:"12px 14px",border:`1px solid ${C.border}`,borderRadius:9,background:C.bg3}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
               <div><div style={{fontSize:12,fontWeight:500,color:C.text}}>{o.name}</div><div style={{fontSize:10,color:C.textSub}}>{o.country}</div></div>
               <Badge col={C.steel} bg={C.steelD}>{o.type}</Badge>

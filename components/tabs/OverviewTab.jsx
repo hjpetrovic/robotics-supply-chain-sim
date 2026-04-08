@@ -26,7 +26,7 @@ export function OverviewTab({result,sc,setS,validationIssues}) {
       <Card>
         <SL>Quick scenarios</SL>
         <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:"1rem"}}>
-          {PRESETS.map(p=><button key={p.name} onClick={()=>Object.entries(p.sc).forEach(([k,v])=>setS(k,v))} style={{fontSize:12,padding:"5px 14px",borderRadius:20,border:`0.5px solid ${C.borderHi}`,background:C.bg3,color:C.textSub,cursor:"pointer"}}>{p.name}</button>)}
+          {PRESETS.map(p=><button key={p.name} onClick={()=>Object.entries(p.sc).forEach(([k,v])=>setS(k,v))} style={{fontSize:12,padding:"5px 14px",borderRadius:20,border:`1px solid ${C.borderHi}`,background:C.bg3,color:C.textSub,cursor:"pointer"}}>{p.name}</button>)}
         </div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:"0.75rem 2rem"}}>
           {[{k:"tw",l:"Trade war",col:C.red},{k:"tr",l:"Taiwan risk",col:C.red},{k:"rn",l:"Resource nationalism",col:C.amber},{k:"rs",l:"Reshoring speed",col:C.green}].map(s=>(
@@ -42,7 +42,7 @@ export function OverviewTab({result,sc,setS,validationIssues}) {
         <div style={{marginTop:"0.75rem",display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
           <span style={{fontSize:11,color:C.textMuted}}>Year:</span>
           {[2027,2030,2033,2035,2040].map(y=>(
-            <button key={y} onClick={()=>setS("yr",y)} style={{fontSize:11,padding:"3px 10px",borderRadius:20,border:`0.5px solid ${sc.yr===y?C.blue:C.border}`,background:sc.yr===y?C.blueD:"transparent",color:sc.yr===y?C.blue:C.textMuted,cursor:"pointer"}}>{y}</button>
+            <button key={y} onClick={()=>setS("yr",y)} style={{fontSize:11,padding:"3px 10px",borderRadius:20,border:`1px solid ${sc.yr===y?C.blue:C.border}`,background:sc.yr===y?C.blueD:"transparent",color:sc.yr===y?C.blue:C.textMuted,cursor:"pointer"}}>{y}</button>
           ))}
         </div>
       </Card>
@@ -61,7 +61,7 @@ export function OverviewTab({result,sc,setS,validationIssues}) {
               </div>
             </div>
           ))}
-          <div style={{padding:"8px 12px",background:C.blueD,border:`0.5px solid ${C.blue}33`,borderRadius:8,fontSize:12,marginTop:8}}>
+          <div style={{padding:"8px 12px",background:C.blueD,border:`1px solid ${C.blue}33`,borderRadius:8,fontSize:12,marginTop:8}}>
             <span style={{color:C.blue,fontWeight:500}}>Binding: </span><span style={{color:C.blue}}>{result.binding}</span>
           </div>
         </Card>
@@ -84,7 +84,7 @@ export function OverviewTab({result,sc,setS,validationIssues}) {
       <Card>
         <SL>Mathematical validation — deterministic</SL>
         {validationIssues.length===0?(
-          <div style={{display:"flex",alignItems:"center",gap:8,padding:"8px 12px",background:C.greenD,border:`0.5px solid ${C.green}44`,borderRadius:8}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,padding:"8px 12px",background:C.greenD,border:`1px solid ${C.green}44`,borderRadius:8}}>
             <span style={{color:C.green,fontSize:18,lineHeight:1}}>✓</span>
             <div>
               <div style={{fontSize:13,fontWeight:500,color:C.green}}>All 8 checks passed</div>
@@ -94,7 +94,7 @@ export function OverviewTab({result,sc,setS,validationIssues}) {
         ):(
           <div style={{display:"grid",gap:5}}>
             {validationIssues.map((iss,i)=>(
-              <div key={i} style={{padding:"7px 12px",background:C.redD,border:`0.5px solid ${C.red}44`,borderRadius:7,fontSize:12,color:C.red}}>{iss}</div>
+              <div key={i} style={{padding:"7px 12px",background:C.redD,border:`1px solid ${C.red}44`,borderRadius:7,fontSize:12,color:C.red}}>{iss}</div>
             ))}
           </div>
         )}

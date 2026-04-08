@@ -12,7 +12,7 @@ export function CostTab({result}) {
     if(!canRef.current||!window.Chart)return;
     if(cInst.current)cInst.current.destroy();
     const sorted=[...COMPONENTS].sort((a,b)=>b.cost-a.cost);
-    cInst.current=new window.Chart(canRef.current,{type:"bar",data:{labels:sorted.map(c=>c.name.split("/")[0].trim()),datasets:[{data:sorted.map(c=>c.cost),backgroundColor:sorted.map(c=>rBg(c.geoRisk)),borderColor:sorted.map(c=>rCol(c.geoRisk)),borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:C.textMuted,font:{size:9},maxRotation:35}},y:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:C.textMuted,font:{size:10},callback:v=>"$"+(v/1000).toFixed(1)+"K"}}}}});
+    cInst.current=new window.Chart(canRef.current,{type:"bar",data:{labels:sorted.map(c=>c.name.split("/")[0].trim()),datasets:[{data:sorted.map(c=>c.cost),backgroundColor:sorted.map(c=>rBg(c.geoRisk)),borderColor:sorted.map(c=>rCol(c.geoRisk)),borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:C.steel,font:{size:9},maxRotation:35}},y:{grid:{color:C.bg3},ticks:{color:C.steel,font:{size:10},callback:v=>"$"+(v/1000).toFixed(1)+"K"}}}}});
     return()=>{if(cInst.current)cInst.current.destroy();};
   },[]);
   return(
@@ -26,7 +26,7 @@ export function CostTab({result}) {
       <Card>
         <SL>Per-component detail</SL>
         {[...COMPONENTS].sort((a,b)=>b.cost-a.cost).map(c=>(
-          <div key={c.id} style={{display:"flex",alignItems:"center",gap:8,padding:"7px 0",borderBottom:`0.5px solid ${C.border}`}}>
+          <div key={c.id} style={{display:"flex",alignItems:"center",gap:8,padding:"7px 0",borderBottom:`1px solid ${C.border}`}}>
             <span style={{fontSize:12,color:C.text,flex:1}}>{c.name}</span>
             <div style={{width:80,height:4,background:C.bg3,borderRadius:2}}><div style={{height:4,width:`${Math.round((c.cost/3500)*100)}%`,background:rCol(c.geoRisk),borderRadius:2}}/></div>
             <span style={{fontSize:12,fontWeight:500,color:C.text,width:55,textAlign:"right"}}>${c.cost.toLocaleString()}</span>

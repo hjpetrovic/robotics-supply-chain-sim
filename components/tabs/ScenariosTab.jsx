@@ -21,7 +21,7 @@ export function ScenariosTab({sc,setS,result,saved,setSaved}) {
         <Card>
           <SL>Presets</SL>
           <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-            {PRESETS.map(p=><button key={p.name} onClick={()=>Object.entries(p.sc).forEach(([k,v])=>setS(k,v))} style={{fontSize:12,padding:"5px 14px",borderRadius:20,border:`0.5px solid ${C.borderHi}`,background:C.bg3,color:C.textSub,cursor:"pointer"}}>{p.name}</button>)}
+            {PRESETS.map(p=><button key={p.name} onClick={()=>Object.entries(p.sc).forEach(([k,v])=>setS(k,v))} style={{fontSize:12,padding:"5px 14px",borderRadius:20,border:`1px solid ${C.borderHi}`,background:C.bg3,color:C.textSub,cursor:"pointer"}}>{p.name}</button>)}
           </div>
         </Card>
         <Card>
@@ -35,7 +35,7 @@ export function ScenariosTab({sc,setS,result,saved,setSaved}) {
               <input type="range" min={s.min} max={s.max} step={s.k==="yr"?1:5} value={sc[s.k]} onChange={e=>setS(s.k,+e.target.value)} style={{width:"100%",accentColor:s.col}}/>
             </div>
           ))}
-          <button onClick={()=>setSaved(p=>[...p,{...sc,label:`Scenario ${p.length+1}`,maxR:result.maxR,cost:result.costPerRobot,risk:result.geoRisk}])} style={{marginTop:4,fontSize:12,padding:"6px 0",borderRadius:20,border:`0.5px solid ${C.blue}66`,background:C.blueD,color:C.blue,cursor:"pointer",width:"100%"}}>Save scenario</button>
+          <button onClick={()=>setSaved(p=>[...p,{...sc,label:`Scenario ${p.length+1}`,maxR:result.maxR,cost:result.costPerRobot,risk:result.geoRisk}])} style={{marginTop:4,fontSize:12,padding:"6px 0",borderRadius:20,border:`1px solid ${C.blue}66`,background:C.blueD,color:C.blue,cursor:"pointer",width:"100%"}}>Save scenario</button>
         </Card>
       </div>
       <div style={{display:"grid",gap:"1.25rem"}}>
@@ -43,7 +43,7 @@ export function ScenariosTab({sc,setS,result,saved,setSaved}) {
           <SL>Output</SL>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:7,marginBottom:12}}>
             {[{l:"Max robots",v:fmt(result.maxR),a:C.blue},{l:"Cost/robot",v:"$"+Math.round(result.costPerRobot/1000)+"K",a:C.amber},{l:"Geo-risk",v:result.geoRisk.toFixed(1)+"/10",a:rCol(result.geoRisk)},{l:"Top bottleneck",v:result.matB[0].short,a:C.red}].map(x=>(
-              <div key={x.l} style={{background:C.bg1,borderRadius:8,padding:"10px 12px",border:`0.5px solid ${C.border}`}}>
+              <div key={x.l} style={{background:C.bg1,borderRadius:8,padding:"10px 12px",border:`1px solid ${C.border}`}}>
                 <div style={{fontSize:10,color:C.textMuted,marginBottom:2,textTransform:"uppercase",letterSpacing:"0.06em"}}>{x.l}</div>
                 <div style={{fontSize:16,fontWeight:600,color:x.a}}>{x.v}</div>
               </div>
@@ -51,7 +51,7 @@ export function ScenariosTab({sc,setS,result,saved,setSaved}) {
           </div>
           {[{l:"Material supply",v:result.mfm,col:C.red},{l:"Component capacity",v:result.mfc,col:C.amber},{l:"OEM assembly",v:result.mfo,col:C.green}].map(b=>{
             const bind=b.v===Math.min(result.mfm,result.mfc,result.mfo);
-            return <div key={b.l} style={{display:"flex",justifyContent:"space-between",padding:"6px 10px",marginBottom:3,borderRadius:7,background:bind?C.redD:C.bg1,border:bind?`0.5px solid ${C.red}44`:`0.5px solid ${C.border}`}}>
+            return <div key={b.l} style={{display:"flex",justifyContent:"space-between",padding:"6px 10px",marginBottom:3,borderRadius:7,background:bind?C.redD:C.bg1,border:bind?`1px solid ${C.red}44`:`1px solid ${C.border}`}}>
               <span style={{fontSize:12,color:bind?C.red:C.textSub}}>{b.l}{bind?" — binding":""}</span>
               <span style={{fontSize:12,fontWeight:500,color:bind?C.red:C.text}}>{fmt(b.v)}</span>
             </div>;
@@ -61,7 +61,7 @@ export function ScenariosTab({sc,setS,result,saved,setSaved}) {
         {saved.length>0&&<Card>
           <SL>Saved scenarios</SL>
           {saved.map((s,i)=>(
-            <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:12}}>
+            <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`1px solid ${C.border}`,fontSize:12}}>
               <span style={{color:C.textSub}}>{s.label} (yr {s.yr})</span>
               <div style={{display:"flex",gap:10}}>
                 <span style={{color:C.blue}}>{fmt(s.maxR)}</span>

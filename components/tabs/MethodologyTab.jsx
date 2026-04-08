@@ -19,8 +19,8 @@ export function MethodologyTab() {
     <div style={{display:"grid",gap:"0.75rem"}}>
       {SECTIONS.map(s=>(
         <Card key={s.title}>
-          <div style={{fontSize:13,fontWeight:600,color:C.blue,marginBottom:7}}>{s.title}</div>
-          <div style={{fontSize:12,color:C.textSub,lineHeight:1.85,whiteSpace:"pre-wrap",fontFamily:"monospace"}}>{s.body}</div>
+          <div style={{fontSize:13,fontWeight:600,color:C.teal,marginBottom:8,letterSpacing:"-0.01em"}}>{s.title}</div>
+          <div style={{fontSize:11.5,color:C.textSub,lineHeight:1.9,whiteSpace:"pre-wrap",fontFamily:"'JetBrains Mono','Fira Code',monospace",background:C.bg3,borderRadius:8,padding:"10px 14px",border:`1px solid ${C.border}`}}>{s.body}</div>
         </Card>
       ))}
     </div>
