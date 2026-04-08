@@ -25,12 +25,44 @@ export function FlowMapTab() {
     if(!d3||!topojson)return;
     container.innerHTML="";
     const W=container.offsetWidth||700,H=360;
-    const svg=d3.select(container).append("svg").attr("viewBox",`0 0 ${W} ${H}`).attr("width","100%").style("background",C.bg1).style("border-radius","8px");
+
+    const svg=d3.select(container).append("svg")
+      .attr("viewBox",`0 0 ${W} ${H}`)
+      .attr("width","100%")
+      .style("background",C.bg1)
+      .style("border-radius","8px")
+      .style("display","block");
+
+    // Tooltip div — positioned absolutely inside the container
+    const tip=d3.select(container).append("div")
+      .style("position","absolute")
+      .style("background","rgba(14,19,48,0.97)")
+      .style("border","1px solid rgba(117,113,228,0.3)")
+      .style("border-radius","8px")
+      .style("padding","8px 12px")
+      .style("font-size","11px")
+      .style("color",C.text)
+      .style("pointer-events","none")
+      .style("opacity","0")
+      .style("max-width","200px")
+      .style("line-height","1.6")
+      .style("z-index","10")
+      .style("transition","opacity 0.1s")
+      .style("top","0").style("left","0");
+
     const proj=d3.geoNaturalEarth1().scale(W/6.2).translate([W/2,H/2]);
     const path=d3.geoPath(proj);
 
+    // Zoom: all drawn content in group g
+    const g=svg.append("g");
+    const zoom=d3.zoom()
+      .scaleExtent([1,6])
+      .translateExtent([[0,0],[W,H]])
+      .on("zoom",(ev)=>g.attr("transform",ev.transform));
+    svg.call(zoom);
+
     d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(world=>{
-      svg.append("g").selectAll("path")
+      g.append("g").selectAll("path")
         .data(topojson.feature(world,world.objects.countries).features)
         .join("path").attr("d",path)
         .attr("fill",C.bg0).attr("stroke",C.bg3).attr("stroke-width","0.4");
@@ -80,7 +112,7 @@ export function FlowMapTab() {
         {f:"jp_o",t:"us_o",col:"rgba(74,158,255,0.15)"},{f:"cn_o",t:"us_o",col:"rgba(240,168,48,0.12)"},
       ];
 
-      svg.append("defs").append("marker").attr("id","arr").attr("markerWidth",6).attr("markerHeight",6)
+      g.append("defs").append("marker").attr("id","arr").attr("markerWidth",6).attr("markerHeight",6)
         .attr("refX",5).attr("refY",3).attr("orient","auto")
         .append("path").attr("d","M0,0 L0,6 L6,3 z").attr("fill","rgba(136,153,170,0.5)");
 
@@ -90,7 +122,7 @@ export function FlowMapTab() {
         const p1=proj([fn.lon,fn.lat]),p2=proj([tn.lon,tn.lat]);
         if(!p1||!p2)return;
         const mx=(p1[0]+p2[0])/2,my=(p1[1]+p2[1])/2-30;
-        svg.append("path").attr("d",`M${p1[0]},${p1[1]} Q${mx},${my} ${p2[0]},${p2[1]}`)
+        g.append("path").attr("d",`M${p1[0]},${p1[1]} Q${mx},${my} ${p2[0]},${p2[1]}`)
           .attr("stroke",e.col).attr("stroke-width",1.5).attr("fill","none").attr("marker-end","url(#arr)");
       });
 
@@ -98,16 +130,31 @@ export function FlowMapTab() {
       const triPts=(x,y,r)=>`${x},${y-r} ${x+r*0.87},${y+r*0.5} ${x-r*0.87},${y+r*0.5}`;
       const sqPts=(x,y,r)=>`${x-r},${y-r} ${x+r},${y-r} ${x+r},${y+r} ${x-r},${y+r}`;
 
+      const showTip=(n,ev)=>{
+        const rect=container.getBoundingClientRect();
+        tip.style("opacity","1")
+          .style("left",(ev.clientX-rect.left+14)+"px")
+          .style("top",(ev.clientY-rect.top-8)+"px")
+          .html(`<span style="font-weight:600;color:${n.col}">${n.label}</span><br><span style="color:${C.textSub}">${n.detail}</span>`);
+      };
+      const moveTip=(ev)=>{
+        const rect=container.getBoundingClientRect();
+        tip.style("left",(ev.clientX-rect.left+14)+"px").style("top",(ev.clientY-rect.top-8)+"px");
+      };
+      const hideTip=()=>tip.style("opacity","0");
+
       const drawGroup=(nodes,shape)=>{
         nodes.forEach(n=>{
           const p=proj([n.lon,n.lat]);if(!p)return;
-          const [x,y]=p,g=svg.append("g").style("cursor","default");
-          g.append("title").text(`${n.label}: ${n.detail}`);
-          if(shape==="circle") g.append("circle").attr("cx",x).attr("cy",y).attr("r",n.r).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
-          else if(shape==="square") g.append("polygon").attr("points",sqPts(x,y,n.r*0.8)).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
-          else if(shape==="hex") g.append("polygon").attr("points",hexPts(x,y,n.r)).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
-          else if(shape==="tri") g.append("polygon").attr("points",triPts(x,y,n.r)).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
-          g.append("text").attr("x",x).attr("y",y+n.r+11).attr("text-anchor","middle").attr("font-size","9").attr("fill",n.col).text(n.label);
+          const [x,y]=p,gr=g.append("g").style("cursor","pointer");
+          if(shape==="circle") gr.append("circle").attr("cx",x).attr("cy",y).attr("r",n.r).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
+          else if(shape==="square") gr.append("polygon").attr("points",sqPts(x,y,n.r*0.8)).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
+          else if(shape==="hex") gr.append("polygon").attr("points",hexPts(x,y,n.r)).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
+          else if(shape==="tri") gr.append("polygon").attr("points",triPts(x,y,n.r)).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
+          gr.append("text").attr("x",x).attr("y",y+n.r+11).attr("text-anchor","middle").attr("font-size","9").attr("fill",n.col).text(n.label);
+          gr.on("mouseenter",(ev)=>showTip(n,ev))
+            .on("mousemove",moveTip)
+            .on("mouseleave",hideTip);
         });
       };
       drawGroup(extract,"circle");
@@ -128,9 +175,9 @@ export function FlowMapTab() {
               <span style={{color:x.c,fontSize:14}}>{x.sh}</span>{x.l}
             </span>
           ))}
-          <span style={{fontSize:10,color:C.textMuted,marginLeft:"auto"}}>Hover nodes for detail</span>
+          <span style={{fontSize:10,color:C.textMuted,marginLeft:"auto"}}>Scroll to zoom · hover nodes for detail</span>
         </div>
-        <div ref={ref} style={{minHeight:360}}/>
+        <div ref={ref} style={{minHeight:360,position:"relative"}}/>
       </Card>
       <Card>
         <SL>Critical flow concentrations</SL>

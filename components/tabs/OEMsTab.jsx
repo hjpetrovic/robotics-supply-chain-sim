@@ -5,6 +5,12 @@ import { C, fmt } from "../../lib/colors.js";
 import { OEMS } from "../../lib/data.js";
 import { Card, SL, Badge } from "../ui/primitives.jsx";
 
+const FLAGS = {Japan:"🇯🇵",China:"🇨🇳",Germany:"🇩🇪",Switzerland:"🇨🇭",USA:"🇺🇸",Denmark:"🇩🇰","S.Korea":"🇰🇷",Italy:"🇮🇹"};
+function flag(country) {
+  for(const [k,v] of Object.entries(FLAGS)){if(country.includes(k))return v;}
+  return "🏳";
+}
+
 export function OEMsTab({result}) {
   const [filter,setFilter]=useState("All");
   const types=["All",...new Set(OEMS.map(o=>o.type))];
@@ -22,7 +28,7 @@ export function OEMsTab({result}) {
         {label:"2024 cap.",data:top10.map(o=>o.cap24),backgroundColor:C.steelD,borderColor:C.steel,borderWidth:1},
         {label:"Projected",data:top10.map(o=>Math.round(o.projCap)),backgroundColor:C.blueD,borderColor:C.blue,borderWidth:1},
       ]
-    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:C.bg3},ticks:{color:C.steel,font:{size:10}}},y:{grid:{display:false},ticks:{color:C.steel,font:{size:10}}}}}});
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:C.bg3},ticks:{color:C.steel,font:{size:10},callback:v=>v+"K"}},y:{grid:{display:false},ticks:{color:C.steel,font:{size:10}}}}}});
     return()=>{if(cInst.current)cInst.current.destroy();};
   },[result.oemList]);
   return(
@@ -45,7 +51,7 @@ export function OEMsTab({result}) {
         {filtered.map(o=>(
           <div key={o.id} style={{padding:"12px 14px",border:`1px solid ${C.border}`,borderRadius:9,background:C.bg3}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
-              <div><div style={{fontSize:12,fontWeight:500,color:C.text}}>{o.name}</div><div style={{fontSize:10,color:C.textSub}}>{o.country}</div></div>
+              <div><div style={{fontSize:12,fontWeight:500,color:C.text}}>{o.name}</div><div style={{fontSize:10,color:C.textSub}}>{flag(o.country)} {o.country}</div></div>
               <Badge col={C.steel} bg={C.steelD}>{o.type}</Badge>
             </div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:5,marginBottom:7}}>
