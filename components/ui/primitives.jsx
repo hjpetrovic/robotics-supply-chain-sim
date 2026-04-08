@@ -32,6 +32,9 @@ export const SL = ({children}) => (
 // ── Badge ──────────────────────────────────────────────────────────────────────
 export const Badge = ({children, col=C.steel, bg=C.steelD}) => (
   <span style={{
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     fontSize: 10,
     padding: "2px 9px",
     borderRadius: 20,
@@ -41,6 +44,7 @@ export const Badge = ({children, col=C.steel, bg=C.steelD}) => (
     whiteSpace: "nowrap",
     border: `1px solid ${col}33`,
     letterSpacing: "0.04em",
+    lineHeight: 1.4,
   }}>
     {children}
   </span>

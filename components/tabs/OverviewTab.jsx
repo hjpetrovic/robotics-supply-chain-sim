@@ -4,6 +4,26 @@ import { C, rCol, rBg, fmt } from "../../lib/colors.js";
 import { PRESETS } from "../../lib/data.js";
 import { Card, SL, Badge } from "../ui/primitives.jsx";
 
+function matchPreset(sc) {
+  return PRESETS.find(p=>Object.keys(p.sc).every(k=>p.sc[k]===sc[k]));
+}
+function scenarioDesc(sc) {
+  const parts=[];
+  if(sc.tw>60)parts.push("severe trade war");
+  else if(sc.tw>25)parts.push("moderate trade war");
+  if(sc.tr>60)parts.push("acute Taiwan strait risk");
+  else if(sc.tr>25)parts.push("elevated Taiwan risk");
+  if(sc.rn>50)parts.push("high resource nationalism");
+  else if(sc.rn>20)parts.push("moderate resource nationalism");
+  if(sc.rs>40)parts.push("strong reshoring response");
+  else if(sc.rs>15)parts.push("partial reshoring");
+  if(sc.rc>20)parts.push("significant recycling/substitution");
+  if(sc.dg>20)parts.push(`high demand growth (${sc.dg}%/yr)`);
+  else if(sc.dg<8)parts.push(`slow demand growth (${sc.dg}%/yr)`);
+  if(parts.length===0)return "Baseline — no geopolitical stress. Projections reflect organic capacity growth and learning-curve cost declines only.";
+  return "Active stressors: "+parts.join(", ")+".";
+}
+
 export function GeoRiskLegend() {
   return (
     <div style={{marginTop:12,padding:"8px 10px",background:C.bg3,borderRadius:8,display:"flex",gap:12,flexWrap:"wrap",alignItems:"center"}}>
@@ -44,6 +64,31 @@ export function OverviewTab({result,sc,setS,validationIssues}) {
           {[2027,2030,2033,2035,2040].map(y=>(
             <button key={y} onClick={()=>setS("yr",y)} style={{fontSize:11,padding:"3px 10px",borderRadius:20,border:`1px solid ${sc.yr===y?C.blue:C.border}`,background:sc.yr===y?C.blueD:"transparent",color:sc.yr===y?C.blue:C.textMuted,cursor:"pointer"}}>{y}</button>
           ))}
+        </div>
+        {/* Scenario summary */}
+        <div style={{marginTop:"1rem",padding:"10px 14px",background:C.bg3,borderRadius:8,border:`1px solid ${C.border}`}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:5}}>
+            <span style={{fontSize:12,fontWeight:600,color:C.text}}>{matchPreset(sc)?.name||"Custom scenario"} · {sc.yr}</span>
+            <div style={{display:"flex",gap:6,alignItems:"center"}}>
+              <span style={{fontSize:11,color:C.textSub}}>Binding: <span style={{color:C.orange,fontWeight:500}}>{result.binding}</span></span>
+              <Badge col={rCol(result.geoRisk)} bg={rBg(result.geoRisk)}>Risk {result.geoRisk.toFixed(1)}</Badge>
+            </div>
+          </div>
+          <div style={{fontSize:11,color:C.textSub,marginBottom:8,lineHeight:1.5}}>{scenarioDesc(sc)}</div>
+          <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+            {[
+              {l:"Trade war",v:sc.tw,col:sc.tw>25?C.red:C.textMuted,unit:"%"},
+              {l:"Taiwan",v:sc.tr,col:sc.tr>25?C.red:C.textMuted,unit:"%"},
+              {l:"Nationalism",v:sc.rn,col:sc.rn>20?C.amber:C.textMuted,unit:"%"},
+              {l:"Reshoring",v:sc.rs,col:sc.rs>15?C.green:C.textMuted,unit:"%"},
+              {l:"Recycling",v:sc.rc,col:sc.rc>10?C.green:C.textMuted,unit:"%"},
+              {l:"Demand",v:sc.dg,col:C.blue,unit:"%/yr"},
+            ].map(p=>(
+              <span key={p.l} style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:C.bg1,border:`1px solid ${C.border}`,color:p.col}}>
+                {p.l}: {p.v}{p.unit}
+              </span>
+            ))}
+          </div>
         </div>
       </Card>
 

@@ -14,6 +14,34 @@ const SECTIONS = [
   {title:"Data sources & caveats",body:"Material supply: USGS Mineral Commodity Summaries 2023–24. Component capacities: Wood Mackenzie, IDTechEx, BloombergNEF analyst estimates. OEM capacities: IFR World Robotics 2023 + company disclosures. All figures are estimates for scenario modelling, not forecasts. Client-side only — no data leaves the browser."},
 ];
 
+const REFERENCES = [
+  {cat:"Critical minerals & materials",items:[
+    {title:"USGS Mineral Commodity Summaries 2024",detail:"Primary source for global production, reserves, and supply figures for rare earths, cobalt, lithium, gallium, nickel, tungsten, and copper."},
+    {title:"IEA: Critical Minerals and Clean Energy Transitions (2023)",detail:"Cross-supply chain analysis of mineral intensity across clean tech, including robotics-adjacent applications."},
+    {title:"S&P Global: Future of Copper — Will the Looming Supply Gap Short-Circuit the Energy Transition?",detail:"Detailed supply-demand modelling for copper through 2035."},
+    {title:"European Commission: Critical Raw Materials Act (CRMA) 2023",detail:"EU policy framework for reshoring strategic mineral processing; directly modelled in the reshoring parameter."},
+    {title:"China Geological Survey: China Mineral Resources Reports",detail:"Production and reserve data for rare earths, gallium, tungsten, and polysilicon — key to Chinese monopoly risk scores."},
+  ]},
+  {cat:"Robotics industry & OEM capacity",items:[
+    {title:"IFR World Robotics Report 2023 — International Federation of Robotics",detail:"Annual survey of industrial robot installations and OEM capacity by country. Primary source for cap24 values."},
+    {title:"IDTechEx: Humanoid Robots 2024–2044",detail:"Market sizing and technology roadmap for humanoid and mobile robots; informs maxGrowth estimates for newer OEMs."},
+    {title:"BloombergNEF: Electric Vehicle Battery Supply Chain Outlook",detail:"Battery pack cost curves and supply chain concentration; adapted for robot battery packs."},
+    {title:"Wood Mackenzie: EV Supply Chain Tracker",detail:"Component capacity estimates by region, particularly for motors, gearboxes, and battery modules."},
+    {title:"Nabtesco Corporation / Harmonic Drive SE: Annual Reports & Technical Datasheets",detail:"Primary source for precision gearbox capacity and concentration; ~80% market share figure for Japan-based gearbox makers."},
+  ]},
+  {cat:"Semiconductors & electronics",items:[
+    {title:"SEMI: World Fab Watch",detail:"Wafer fab capacity data by region and node; underpins the Taiwan risk sensitivity for semiconductors."},
+    {title:"TrendForce: Semiconductor Supply Chain Intelligence",detail:"Quarterly capacity utilisation and chip supply forecasts. Informs AI chip ceiling (semis component cap)."},
+    {title:"US CHIPS and Science Act (2022)",detail:"Policy text for domestic semiconductor manufacturing investment; modelled as a partial offset to Taiwan risk."},
+    {title:"TSMC Annual Report 2023",detail:"Capacity expansion plans, CoWoS/advanced packaging constraints, and customer mix relevant to AI chip supply."},
+  ]},
+  {cat:"Economic modelling",items:[
+    {title:"Wright, T.P. (1936): Factors Affecting the Cost of Airplanes, Journal of Aeronautical Sciences",detail:"Original formulation of the learning curve (Wright's Law) applied here at 15% cost reduction per production doubling."},
+    {title:"Way, R. et al. (2022): Empirically grounded technology forecasts and the energy transition, Joule",detail:"Empirical validation of learning curve rates across clean-tech hardware, supporting the 15% parameter choice."},
+    {title:"Lafond, F. et al. (2018): How well do experience curves predict technological progress? Energy Policy",detail:"Meta-analysis of Wright's Law across technology sectors."},
+  ]},
+];
+
 export function MethodologyTab() {
   return(
     <div style={{display:"grid",gap:"0.75rem"}}>
@@ -23,6 +51,23 @@ export function MethodologyTab() {
           <div style={{fontSize:11.5,color:C.textSub,lineHeight:1.9,whiteSpace:"pre-wrap",fontFamily:"'JetBrains Mono','Fira Code',monospace",background:C.bg3,borderRadius:8,padding:"10px 14px",border:`1px solid ${C.border}`}}>{s.body}</div>
         </Card>
       ))}
+
+      <Card>
+        <div style={{fontSize:13,fontWeight:600,color:C.teal,marginBottom:12,letterSpacing:"-0.01em"}}>References & further reading</div>
+        <div style={{display:"grid",gap:"1.25rem"}}>
+          {REFERENCES.map(cat=>(
+            <div key={cat.cat}>
+              <SL>{cat.cat}</SL>
+              {cat.items.map((ref,i)=>(
+                <div key={i} style={{padding:"8px 0",borderBottom:`1px solid ${C.border}`}}>
+                  <div style={{fontSize:12,fontWeight:500,color:C.text,marginBottom:2}}>{ref.title}</div>
+                  <div style={{fontSize:11,color:C.textSub,lineHeight:1.5}}>{ref.detail}</div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </Card>
     </div>
   );
 }

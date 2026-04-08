@@ -32,7 +32,7 @@ export function ComponentsTab({result}) {
       datasets:[{label:"Cost trajectory",data:trajCosts,borderColor:C.amber,backgroundColor:"rgba(245,158,11,0.07)",fill:true,borderWidth:2,pointRadius:2,tension:0.3}]
     },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
       x:{grid:{color:C.bg3},ticks:{color:C.steel,font:{size:10}}},
-      y:{grid:{color:C.bg3},ticks:{color:C.steel,font:{size:10},callback:v=>"$"+(v/1000).toFixed(0)+"K"}},
+      y:{grid:{color:C.bg3},ticks:{color:C.steel,font:{size:10},callback:v=>"$"+(v/1000).toFixed(1)+"K"}},
     }}});
     return()=>{if(cInst2.current)cInst2.current.destroy();};
   },[comp,result.traj]);

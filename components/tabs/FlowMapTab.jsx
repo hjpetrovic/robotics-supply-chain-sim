@@ -33,7 +33,7 @@ export function FlowMapTab() {
       .style("border-radius","8px")
       .style("display","block");
 
-    // Tooltip div — positioned absolutely inside the container
+    // Tooltip
     const tip=d3.select(container).append("div")
       .style("position","absolute")
       .style("background","rgba(14,19,48,0.97)")
@@ -53,12 +53,24 @@ export function FlowMapTab() {
     const proj=d3.geoNaturalEarth1().scale(W/6.2).translate([W/2,H/2]);
     const path=d3.geoPath(proj);
 
-    // Zoom: all drawn content in group g
+    // Single group — everything zooms together.
+    // Node groups are counter-scaled on zoom so icons stay visually constant size.
     const g=svg.append("g");
+
     const zoom=d3.zoom()
       .scaleExtent([1,6])
       .translateExtent([[0,0],[W,H]])
-      .on("zoom",(ev)=>g.attr("transform",ev.transform));
+      .on("zoom",(ev)=>{
+        const k=ev.transform.k;
+        g.attr("transform",ev.transform);
+        // Counter-scale each node group: translate stays at projected coords,
+        // but internal shapes/labels scale by 1/k so visual size is unchanged.
+        g.selectAll(".node-gr").attr("transform",function(d){
+          const p=proj([d.lon,d.lat]);
+          if(!p)return "";
+          return `translate(${p[0]},${p[1]}) scale(${1/k})`;
+        });
+      });
     svg.call(zoom);
 
     d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(world=>{
@@ -126,9 +138,9 @@ export function FlowMapTab() {
           .attr("stroke",e.col).attr("stroke-width",1.5).attr("fill","none").attr("marker-end","url(#arr)");
       });
 
-      const hexPts=(x,y,r)=>Array.from({length:6},(_,i)=>{const a=i*Math.PI/3-Math.PI/6;return`${x+r*Math.cos(a)},${y+r*Math.sin(a)}`;}).join(" ");
-      const triPts=(x,y,r)=>`${x},${y-r} ${x+r*0.87},${y+r*0.5} ${x-r*0.87},${y+r*0.5}`;
-      const sqPts=(x,y,r)=>`${x-r},${y-r} ${x+r},${y-r} ${x+r},${y+r} ${x-r},${y+r}`;
+      const hexPts=(r)=>Array.from({length:6},(_,i)=>{const a=i*Math.PI/3-Math.PI/6;return`${r*Math.cos(a)},${r*Math.sin(a)}`;}).join(" ");
+      const triPts=(r)=>`0,${-r} ${r*0.87},${r*0.5} ${-r*0.87},${r*0.5}`;
+      const sqPts=(r)=>`${-r},${-r} ${r},${-r} ${r},${r} ${-r},${r}`;
 
       const showTip=(n,ev)=>{
         const rect=container.getBoundingClientRect();
@@ -143,15 +155,21 @@ export function FlowMapTab() {
       };
       const hideTip=()=>tip.style("opacity","0");
 
+      // drawGroup: shapes centered at (0,0), group translated to projected position.
+      // On zoom, groups are counter-scaled via scale(1/k) keeping visual size constant.
       const drawGroup=(nodes,shape)=>{
         nodes.forEach(n=>{
           const p=proj([n.lon,n.lat]);if(!p)return;
-          const [x,y]=p,gr=g.append("g").style("cursor","pointer");
-          if(shape==="circle") gr.append("circle").attr("cx",x).attr("cy",y).attr("r",n.r).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
-          else if(shape==="square") gr.append("polygon").attr("points",sqPts(x,y,n.r*0.8)).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
-          else if(shape==="hex") gr.append("polygon").attr("points",hexPts(x,y,n.r)).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
-          else if(shape==="tri") gr.append("polygon").attr("points",triPts(x,y,n.r)).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
-          gr.append("text").attr("x",x).attr("y",y+n.r+11).attr("text-anchor","middle").attr("font-size","9").attr("fill",n.col).text(n.label);
+          const gr=g.append("g")
+            .datum(n)  // lon/lat bound for zoom counter-scaling
+            .attr("class","node-gr")
+            .attr("transform",`translate(${p[0]},${p[1]})`)
+            .style("cursor","pointer");
+          if(shape==="circle")  gr.append("circle").attr("cx",0).attr("cy",0).attr("r",n.r).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
+          else if(shape==="square") gr.append("polygon").attr("points",sqPts(n.r*0.8)).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
+          else if(shape==="hex") gr.append("polygon").attr("points",hexPts(n.r)).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
+          else if(shape==="tri") gr.append("polygon").attr("points",triPts(n.r)).attr("fill",n.col+"28").attr("stroke",n.col).attr("stroke-width",1.5);
+          gr.append("text").attr("x",0).attr("y",n.r+11).attr("text-anchor","middle").attr("font-size","9").attr("fill",n.col).text(n.label);
           gr.on("mouseenter",(ev)=>showTip(n,ev))
             .on("mousemove",moveTip)
             .on("mouseleave",hideTip);

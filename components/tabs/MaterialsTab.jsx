@@ -17,7 +17,21 @@ export function MaterialsTab({result}) {
     cInst.current=new window.Chart(canRef.current,{type:"bar",data:{
       labels:top.map(m=>m.short),
       datasets:[{data:top.map(m=>m.geoRisk),backgroundColor:top.map(m=>rBg(m.geoRisk)),borderColor:top.map(m=>rCol(m.geoRisk)),borderWidth:1}]
-    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{
+      legend:{display:false},
+      tooltip:{
+        callbacks:{
+          title:(items)=>top[items[0].dataIndex]?.name||"",
+          label:(item)=>`Geo-risk: ${item.raw}/10 — ${top[item.dataIndex]?.desc||""}`,
+        },
+        backgroundColor:"rgba(14,19,48,0.97)",
+        borderColor:"rgba(117,113,228,0.3)",
+        borderWidth:1,
+        titleColor:C.text,
+        bodyColor:C.textSub,
+        padding:10,
+      },
+    },scales:{
       x:{grid:{display:false},ticks:{color:C.steel,font:{size:10}}},
       y:{min:0,max:10,grid:{color:C.bg3},ticks:{color:C.steel,font:{size:10}}},
     }}});

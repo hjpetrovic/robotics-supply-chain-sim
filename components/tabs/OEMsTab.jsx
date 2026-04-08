@@ -51,7 +51,7 @@ export function OEMsTab({result}) {
         {filtered.map(o=>(
           <div key={o.id} style={{padding:"12px 14px",border:`1px solid ${C.border}`,borderRadius:9,background:C.bg3}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
-              <div><div style={{fontSize:12,fontWeight:500,color:C.text}}>{o.name}</div><div style={{fontSize:10,color:C.textSub}}>{flag(o.country)} {o.country}</div></div>
+              <div><div style={{fontSize:12,fontWeight:500,color:C.text}}>{o.name}</div><div style={{fontSize:10,color:C.textSub,display:"flex",alignItems:"center",gap:4}}><span style={{fontSize:16,lineHeight:1}}>{flag(o.country)}</span>{o.country}</div></div>
               <Badge col={C.steel} bg={C.steelD}>{o.type}</Badge>
             </div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:5,marginBottom:7}}>
